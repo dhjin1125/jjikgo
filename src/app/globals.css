@@ -1,0 +1,205 @@
+@import "tailwindcss";
+
+@theme {
+  --color-paper: #fcfbf8;
+  --color-sheet: #ffffff;
+  --color-ink: #1c1b1a;
+  --color-ink-60: rgba(28, 27, 26, 0.6);
+  --color-ink-40: rgba(28, 27, 26, 0.4);
+  --color-ink-15: rgba(28, 27, 26, 0.15);
+  --color-ink-08: rgba(28, 27, 26, 0.08);
+  --color-seal: #c93a1e;
+  --color-seal-deep: #a82e16;
+  --color-seal-wash: #fbeae4;
+  --color-success: #2f6b4f;
+  --color-warning: #a96a00;
+  --color-error: #8f1d1d;
+  --font-display: "Noto Serif KR", "NanumMyeongjo", serif;
+  --font-sans: "IBM Plex Sans KR", "Apple SD Gothic Neo", sans-serif;
+  --font-mono: "IBM Plex Mono", "SF Mono", monospace;
+}
+
+:root {
+  --paper: #fcfbf8;
+  --sheet: #ffffff;
+  --ink: #1c1b1a;
+  --ink-60: rgba(28, 27, 26, 0.6);
+  --ink-40: rgba(28, 27, 26, 0.4);
+  --ink-15: rgba(28, 27, 26, 0.15);
+  --ink-08: rgba(28, 27, 26, 0.08);
+  --seal: #c93a1e;
+  --seal-deep: #a82e16;
+  --seal-wash: #fbeae4;
+  --ease-out: cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+html {
+  background: var(--paper);
+  color: var(--ink);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+}
+
+::selection {
+  background: var(--seal-wash);
+  color: var(--seal-deep);
+}
+
+:focus-visible {
+  outline: 2px solid var(--ink);
+  outline-offset: 2px;
+}
+
+/* 종이 시트 — 문서와 패널에 쓰는 유일한 elevation */
+.sheet {
+  background: var(--sheet);
+  border: 1px solid var(--ink-15);
+  border-radius: 4px;
+  box-shadow:
+    0 1px 0 rgba(0, 0, 0, 0.04),
+    0 8px 24px -12px rgba(28, 27, 26, 0.18);
+}
+
+.font-display { font-family: var(--font-display); }
+.font-mono2 { font-family: var(--font-mono); }
+
+.mono-label {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--ink-60);
+}
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: 600;
+  font-size: 15px;
+  border-radius: 2px;
+  transition: background 140ms var(--ease-out), color 140ms var(--ease-out),
+    border-color 140ms var(--ease-out);
+  cursor: pointer;
+  user-select: none;
+}
+.btn-primary {
+  background: var(--seal);
+  color: #fff;
+  padding: 12px 22px;
+}
+.btn-primary:hover { background: var(--seal-deep); }
+.btn-ghost {
+  color: var(--ink);
+  padding: 12px 22px;
+  text-decoration: underline;
+  text-underline-offset: 4px;
+  text-decoration-color: var(--ink-40);
+}
+.btn-ghost:hover { text-decoration-color: var(--ink); }
+.btn-outline {
+  border: 1px solid var(--ink-15);
+  padding: 10px 18px;
+  background: var(--sheet);
+}
+.btn-outline:hover { border-color: var(--ink); }
+.btn[disabled] { opacity: 0.4; pointer-events: none; }
+
+/* 인주 찍힘 시그니처 모션 */
+@keyframes stamp-in {
+  0% { transform: scale(1.35) rotate(-2deg); opacity: 0; }
+  60% { transform: scale(0.96) rotate(0.5deg); opacity: 1; }
+  100% { transform: scale(1) rotate(0deg); opacity: 1; }
+}
+.stamp-in { animation: stamp-in 180ms var(--ease-out) both; }
+
+@keyframes fade-up {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.fade-up { animation: fade-up 400ms var(--ease-out) both; }
+
+/* 드롭존 */
+.dropzone {
+  border: 1.5px dashed var(--ink-40);
+  border-radius: 4px;
+  background: var(--sheet);
+  transition: border-color 160ms var(--ease-out), background 160ms var(--ease-out);
+  cursor: pointer;
+}
+.dropzone:hover, .dropzone.dragging {
+  border-color: var(--seal);
+  background: #fff;
+}
+.dropzone.dragging { box-shadow: inset 0 0 0 2px var(--seal-wash); }
+
+/* 그리기 패드 */
+.pad-canvas { touch-action: none; cursor: crosshair; }
+
+/* 서명 오브젝트 */
+.placement {
+  position: absolute;
+  touch-action: none;
+  cursor: grab;
+}
+.placement.selected { outline: 1.5px solid var(--seal); outline-offset: 2px; }
+.placement .handle {
+  position: absolute;
+  width: 14px; height: 14px;
+  background: var(--sheet);
+  border: 1.5px solid var(--seal);
+  border-radius: 2px;
+}
+.placement .handle-se { right: -8px; bottom: -8px; cursor: nwse-resize; }
+.placement .handle-rot {
+  left: 50%; top: -26px; margin-left: -7px;
+  border-radius: 50%; cursor: grab;
+}
+.placement .handle-del {
+  right: -10px; top: -10px;
+  width: 18px; height: 18px; border-radius: 50%;
+  background: var(--ink); color: #fff;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 11px; line-height: 1; cursor: pointer; border: none;
+}
+
+/* 얇은 진행 막대 */
+.progress-line {
+  height: 2px; background: var(--ink-08); overflow: hidden; border-radius: 1px;
+}
+.progress-line > i {
+  display: block; height: 100%; background: var(--ink);
+  transition: width 200ms var(--ease-out);
+}
+
+/* 스크롤바 — 도구 패널 */
+.nice-scroll::-webkit-scrollbar { width: 8px; }
+.nice-scroll::-webkit-scrollbar-thumb { background: var(--ink-15); border-radius: 4px; }
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* DOCX 미리보기 — docx-preview 출력 */
+.docx-holder .docx-wrapper {
+  background: transparent !important;
+  padding: 0 !important;
+}
+.docx-holder .docx-wrapper > section.docx {
+  margin-bottom: 16pt;
+  box-shadow: none;
+}
+
+.field {
+  width: 100%;
+  border: 1px solid var(--ink-15);
+  background: #fff;
+  padding: 0.6rem 0.75rem;
+  font-size: 0.875rem;
+  border-radius: 2px;
+  outline: none;
+}
+.field:focus { border-color: var(--ink); }
