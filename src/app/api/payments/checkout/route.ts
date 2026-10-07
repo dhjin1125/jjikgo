@@ -1,4 +1,5 @@
 // 결제 준비 — orderId를 서버가 발급하고 클라이언트가 토스 결제창을 연다.
+import { PAID_PASSES_AVAILABLE } from "@/lib/service-availability";
 import { NextResponse } from "next/server";
 import { randomBytes } from "node:crypto";
 import { getSessionUserId } from "@/lib/server/auth";
@@ -8,6 +9,9 @@ import { getConfig, PLANS, type PlanId } from "@/lib/server/config";
 export const dynamic = "force-dynamic";
 
 export async function POST(req: Request) {
+  if (!PAID_PASSES_AVAILABLE) {
+    return NextResponse.json({ error: "유료 이용권은 아직 판매하지 않습니다.", code: "SALES_NOT_OPEN" }, { status: 503 });
+  }
   const c = getConfig();
   if (!c.tossConfigured)
     return NextResponse.json(

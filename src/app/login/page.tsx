@@ -2,6 +2,7 @@
 
 import { useState, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
+import Link from "next/link";
 import SealMark from "@/components/SealMark";
 
 function LoginForm() {
@@ -85,6 +86,9 @@ function LoginForm() {
         onChange={(e) => setPassword(e.target.value)}
         onKeyDown={(e) => e.key === "Enter" && submit()}
       />
+      <p className="mb-4 text-xs leading-relaxed" style={{ color: "var(--ink-60)" }}>
+        계정 생성·로그인 전에 <Link href="/privacy" className="underline">개인정보처리방침</Link>과 <Link href="/terms" className="underline">이용약관</Link>을 확인해 주세요. 이메일과 비밀번호는 계정 제공에, 선택한 이름은 계정 표시에 사용합니다. 삭제 문의: jin@nodeoff.kr
+      </p>
       {err && (
         <p className="mb-3 text-sm" style={{ color: "var(--error)" }}>
           {err}

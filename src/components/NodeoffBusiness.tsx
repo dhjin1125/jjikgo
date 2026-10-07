@@ -1,5 +1,5 @@
 export function NodeoffBusiness() {
-  return <details className="nodeoff-business" style={{fontSize:12,lineHeight:1.8,marginTop:16}}>
+  return <><nav aria-label="이용 안내" style={{fontSize:13,display:"flex",gap:16,marginTop:20}}><a href="/privacy">개인정보처리방침</a><a href="/terms">이용약관</a></nav><details className="nodeoff-business" style={{fontSize:12,lineHeight:1.8,marginTop:16}}>
     <summary style={{cursor:"pointer"}}>노드오프 · 사업자 정보</summary>
     <div style={{paddingTop:8}}>
       <div>상호 노드오프 · 대표 진동현</div>
@@ -9,5 +9,5 @@ export function NodeoffBusiness() {
       <div><a href="https://nodeoff.kr" target="_blank" rel="noopener noreferrer">회사 홈페이지 ↗</a></div>
       <small>© 2026 노드오프</small>
     </div>
-  </details>;
+  </details></>;
 }

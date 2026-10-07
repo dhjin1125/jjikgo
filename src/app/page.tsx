@@ -1,9 +1,7 @@
 "use client";
 
-import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import { startCheckout } from "@/lib/account";
 import Dropzone from "@/components/Dropzone";
 import SealMark from "@/components/SealMark";
 import BeforeAfter from "@/components/BeforeAfter";
@@ -16,16 +14,16 @@ const PLANS = [
     unit: "",
     features: [
       "도장·서명 PNG 제작",
-      "PDF·이미지 하루 1건 · 최대 5쪽",
-      "가입 후 한글·워드 원본 저장 최초 1건",
-      "도장함 1개",
+      "비로그인: 브라우저에서 문서 편집·저장",
+      "로그인: 문서 저장 하루 1건",
+      "로그인 도장함 동기화 1개",
     ],
   },
   {
     planId: "pass7" as const,
-    name: "7일 이용권",
+    name: "7일 이용권 · 판매 예정",
     price: "4,900원",
-    unit: "일회 결제",
+    unit: "일회 결제 예정",
     features: [
       "문서 20건 · 건당 최대 50쪽",
       "원본 형식 저장",
@@ -36,11 +34,11 @@ const PLANS = [
   },
   {
     planId: "pro" as const,
-    name: "프로",
+    name: "30일 이용권 · 판매 예정",
     price: "9,900원",
-    unit: "월 구독",
+    unit: "일회 결제 예정",
     features: [
-      "월 100건 · 건당 최대 50쪽",
+      "월 최대 100건 · 건당 최대 50쪽 (예정)",
       "도장함 20개 · 반복 서식 20개",
       "최대 20개 일괄 처리",
     ],
@@ -54,7 +52,7 @@ const FAQS = [
   },
   {
     q: "제 문서가 서버에 올라가나요?",
-    a: "현재 PDF·이미지 작업은 전부 이 브라우저 안에서 처리됩니다. 문서·서명 이미지·파일명이 외부로 전송되지 않습니다. 한글·워드 원본 처리처럼 서버가 필요한 기능은 전송 전에 별도로 알리고, 결과 생성 후 최대 1시간만 임시 보관하는 것이 방침입니다.",
+    a: "PDF·이미지·DOCX·HWPX 문서 편집은 브라우저에서 처리하며 문서 원본을 서버에 업로드하지 않습니다. 다만 로그인 후 도장함에 저장한 도장·서명 이미지와 이름은 기기 간 동기화를 위해 서버에 저장됩니다. 로그인 사용자의 저장 형식·쪽 수·처리 시각도 이용 한도 관리에 사용합니다.",
   },
   {
     q: "한글(HWP)·워드 파일은 어떻게 하나요?",
@@ -80,15 +78,6 @@ const FAQS = [
 
 export default function Landing() {
   const router = useRouter();
-  const [busyPlan, setBusyPlan] = useState<string | null>(null);
-  const [payErr, setPayErr] = useState<string | null>(null);
-  const buy = async (plan: "pass7" | "pro") => {
-    setPayErr(null);
-    setBusyPlan(plan);
-    const err = await startCheckout(plan);
-    setBusyPlan(null);
-    if (err) setPayErr(err);
-  };
   const goFile = (f: File) => {
     pendingFile.file = f;
     router.push("/editor");
@@ -244,15 +233,15 @@ export default function Landing() {
             <ul className="mt-6 space-y-4 text-sm leading-relaxed" style={{ color: "var(--ink-60)" }}>
               <li className="flex gap-3">
                 <SealMark size={18} glyph={false} className="mt-0.5 shrink-0" />
-                <span><strong style={{ color: "var(--ink)" }}>PDF·이미지는 브라우저 안에서만 처리</strong>됩니다. 파일이 서버로 전송되지 않습니다.</span>
+                <span><strong style={{ color: "var(--ink)" }}>PDF·이미지·DOCX·HWPX는 브라우저 안에서 처리</strong>됩니다. 파일이 서버로 전송되지 않습니다.</span>
               </li>
               <li className="flex gap-3">
                 <SealMark size={18} glyph={false} className="mt-0.5 shrink-0" />
-                <span>서버 처리가 필요한 형식은 <strong style={{ color: "var(--ink)" }}>전송 전에 알리고, 완성 후 최대 1시간</strong>만 임시 보관합니다.</span>
+                <span>로그인 후 저장한 도장·서명은 <strong style={{ color: "var(--ink)" }}>기기 간 동기화를 위해 서버에도</strong> 보관합니다. 문서 원본은 전송하지 않습니다.</span>
               </li>
               <li className="flex gap-3">
                 <SealMark size={18} glyph={false} className="mt-0.5 shrink-0" />
-                <span>도장·서명은 <strong style={{ color: "var(--ink)" }}>‘도장함에 저장’을 선택한 경우에만</strong> 이 기기에 남습니다.</span>
+                <span>도장함의 이미지와 이름, 계정 정보의 처리·삭제 방법은 <Link href="/privacy" className="underline">개인정보처리방침</Link>에서 확인할 수 있습니다.</span>
               </li>
             </ul>
           </div>
@@ -262,10 +251,10 @@ export default function Landing() {
       {/* 가격 */}
       <section id="price" className="border-t" style={{ borderColor: "var(--ink-08)" }}>
         <div className="mx-auto max-w-[1120px] px-6 py-20">
-          <p className="mono-label mb-3">가격 — 부가세 포함</p>
+          <p className="mono-label mb-3">현재 무료 이용 · 유료 이용권 준비 중</p>
           <h2 className="font-display text-3xl font-bold">급한 서류부터 반복 작업까지</h2>
           <p className="mt-3 text-sm" style={{ color: "var(--ink-60)" }}>
-            지금은 비공개 베타 기간으로 모든 기능을 무료로 열어둡니다. 아래 버튼은 결제 연동이 켜지면 바로 동작합니다.
+            현재 공개 베타로 무료 기능을 이용할 수 있습니다. 비로그인 문서 작업과 로그인 계정의 이용 한도는 아래 안내를 확인해 주세요. 유료 이용권은 아직 판매하지 않으며, 표시 금액은 부가세를 포함한 예정 가격입니다.
           </p>
           <div className="mt-10 grid gap-px overflow-hidden rounded-sm sm:grid-cols-3" style={{ background: "var(--ink-15)", border: "1px solid var(--ink-15)" }}>
             {PLANS.map((p) => (
@@ -288,10 +277,10 @@ export default function Landing() {
                 {p.planId ? (
                   <button
                     className="btn btn-outline mt-6 justify-center py-2 text-sm"
-                    disabled={!!busyPlan}
-                    onClick={() => void buy(p.planId!)}
+                    disabled
+                    aria-label={`${p.name}: 현재 구매할 수 없습니다`}
                   >
-                    {busyPlan === p.planId ? "결제창 여는 중…" : "이용권 시작"}
+                    판매 준비 중
                   </button>
                 ) : (
                   <p className="mono-label mt-6" style={{ color: "var(--ink-40)" }}>
@@ -301,12 +290,9 @@ export default function Landing() {
               </div>
             ))}
           </div>
-          {payErr && (
-            <p className="mt-3 text-sm" style={{ color: "var(--warning)" }}>{payErr}</p>
-          )}
           <p className="mt-4 text-xs leading-relaxed" style={{ color: "var(--ink-40)" }}>
             모든 상품에 워터마크가 없습니다. 원본+PDF를 함께 받아도 1건, 출력 실패는 차감하지 않고,
-            일괄 작업은 성공한 문서 수만 차감합니다. 이용권은 자동 갱신되지 않습니다.
+            일괄 작업은 성공한 문서 수만 차감합니다. 예정된 7일·30일 이용권은 자동 갱신 없는 일회 결제입니다. 판매 시작 전 제공 범위와 이용 조건을 다시 안내합니다.
           </p>
         </div>
       </section>
